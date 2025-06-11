@@ -1,5 +1,8 @@
 // src/pages/user/UserHome.jsx
+
 import React, { useState, useEffect } from "react";
+import AboutSection from "../../components/AboutSection"; // استيراد قسم About
+
 import {
   FaUpload,
   FaShoppingCart,
@@ -90,7 +93,7 @@ export default function UserHome() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gray-50 pt-4">
+    <><div className="min-h-screen flex flex-col md:flex-row bg-gray-50 pt-4">
       {/* Sidebar */}
       <aside className="w-full md:w-1/4 bg-white shadow p-4 space-y-4">
         <button
@@ -144,8 +147,7 @@ export default function UserHome() {
                 onChange={(e) => setNewProduct({ ...newProduct, title: e.target.value })}
                 className="w-full border px-3 py-2 rounded"
                 required
-                autoComplete="off"
-              />
+                autoComplete="off" />
               <input
                 type="number"
                 placeholder="Price"
@@ -153,21 +155,18 @@ export default function UserHome() {
                 onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })}
                 className="w-full border px-3 py-2 rounded"
                 required
-                autoComplete="off"
-              />
+                autoComplete="off" />
               <textarea
                 placeholder="Description"
                 value={newProduct.description}
                 onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
                 className="w-full border px-3 py-2 rounded"
-                autoComplete="off"
-              />
+                autoComplete="off" />
               <input
                 type="file"
                 onChange={(e) => setNewProduct({ ...newProduct, image: e.target.files[0] })}
                 className="w-full"
-                autoComplete="off"
-              />
+                autoComplete="off" />
               <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
                 Upload
               </button>
@@ -187,9 +186,7 @@ export default function UserHome() {
                   <h3 className="font-semibold">{prod.title}</h3>
                   <p className="text-gray-600">${prod.price}</p>
                   <p
-                    className={`mt-2 ${
-                      prod.stock < 1 ? "text-red-600" : "text-green-600"
-                    }`}
+                    className={`mt-2 ${prod.stock < 1 ? "text-red-600" : "text-green-600"}`}
                   >
                     {prod.stock < 1 ? "Out of Stock" : `In Stock: ${prod.stock}`}
                   </p>
@@ -236,9 +233,7 @@ export default function UserHome() {
                   >
                     <span>{item.title}</span>
                     <button
-                      onClick={() =>
-                        setCart((c) => c.filter((ci) => ci.id !== item.id))
-                      }
+                      onClick={() => setCart((c) => c.filter((ci) => ci.id !== item.id))}
                       className="text-red-600 hover:underline"
                     >
                       Remove
@@ -259,8 +254,7 @@ export default function UserHome() {
                 onBlur={(e) => handleComplaint(e.target.value)}
                 placeholder="Write your complaint..."
                 className="w-full border px-3 py-2 rounded"
-                autoComplete="off"
-              />
+                autoComplete="off" />
             </div>
             <h3 className="font-semibold mb-2">Rate Products</h3>
             <div className="flex gap-4 mb-4">
@@ -272,10 +266,7 @@ export default function UserHome() {
                       <button
                         key={v}
                         onClick={() => handleRate(prod.id, v)}
-                        className={`h-4 w-4 ${
-                          ratings[prod.id] >= v ? "bg-yellow-400" : "bg-gray-300"
-                        } rounded-full`}
-                      />
+                        className={`h-4 w-4 ${ratings[prod.id] >= v ? "bg-yellow-400" : "bg-gray-300"} rounded-full`} />
                     ))}
                   </div>
                 </div>
@@ -295,6 +286,7 @@ export default function UserHome() {
           </section>
         )}
       </main>
-    </div>
+    </div><AboutSection /></>
+    
   );
 }

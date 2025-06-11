@@ -1,0 +1,7 @@
+@import "tailwindcss";
+/* src/index.css */
+html {
+  font-family: theme("fontFamily.sans");
+
+}
+

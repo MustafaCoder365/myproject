@@ -9,7 +9,7 @@ export default function HeroCarousel({ slides }) {
   const timeoutRef = useRef(null);
 
   // قمّ بإعداد تغيير تلقائي للصور كل 5 ثوانٍ (اختياري)
-  useEffect(() => {
+  useEffect(() => { 
     resetTimeout();
     timeoutRef.current = setTimeout(
       () => setCurrent((prevIndex) => (prevIndex === length - 1 ? 0 : prevIndex + 1)),

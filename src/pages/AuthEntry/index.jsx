@@ -35,13 +35,13 @@ export default function AuthEntry() {
       ctaText: "View Lamps",
       ctaLink: "/shop/lamps",
     },
-    {
-      image: "/src/assets/2319_sofa_chaise_tn_img_3021.jpg",
-      title: "Used Sofas at Budget-Friendly Rates",
-      subtitle: "Furnish your home with stylish, gently used sofas.",
-      ctaText: "Discover Sofas",
-      ctaLink: "/shop/sofas",
-    },
+   {
+  image: "/src/assets/7cb74d4b-b414-47eb-b67c-5584e45f53b3.png",
+  title: "Give Things a New Worth",
+  subtitle: "Discover the value in pre-loved items. Reuse, Refresh, Reworth.",
+  ctaText: "Start Exploring",
+  ctaLink: "/store"
+},
   ];
 
   // بيانات التصنيفات
@@ -52,8 +52,8 @@ export default function AuthEntry() {
       link: "/shop/clothing",
     },
     {
-      name: "Food",
-      logo: "/src/assets/food.png",
+      name: "Cars",
+      logo: "/src/assets/car.jpg",
       link: "/shop/food",
     },
     {
@@ -69,12 +69,29 @@ export default function AuthEntry() {
   ];
 
   // بيانات المتاجر
-  const storesData = [
-    { name: "Downtown Branch", link: "/stores/downtown" },
-    { name: "Mall Outlet", link: "/stores/mall" },
-    { name: "Airport Kiosk", link: "/stores/airport" },
-    { name: "Beachside Shop", link: "/stores/beach" },
-  ];
+const storesData = [
+  {
+    name: "Downtown Branch",
+    link: "/stores/downtown",
+    logo: "https://via.placeholder.com/80?text=Downtown"
+  },
+  {
+    name: "Mall Outlet",
+    link: "/stores/mall",
+    logo: "https://i.pinimg.com/1200x/00/82/e0/0082e01b0d3bbb77a3daa353a4ea5fc9.jpg"
+  },
+  {
+    name: "Airport Kiosk",
+    link: "/stores/airport",
+    logo: "https://via.placeholder.com/80?text=Airport"
+  },
+  {
+    name: "Beachside Shop",
+    link: "/stores/beach",
+    logo: "https://via.placeholder.com/80?text=Beach"
+  }
+];
+
 
   // بيانات أحدث المنتجات
   const productsData = [

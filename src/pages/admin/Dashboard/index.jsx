@@ -1,356 +1,184 @@
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // <-- تم إضافته
 import {
-  FaTachometerAlt,
-  FaChartBar,
-  FaUsers,
-  FaStore,
-  FaTags,
-  FaCog,
-  FaSignOutAlt,
-  FaComments,
-  FaBars,
+  FaUser, FaMotorcycle, FaChartLine, FaHome, FaBoxOpen, FaStore, FaUsers,
+  FaBell, FaChartPie, FaClipboardList, FaTruck, FaSignOutAlt, FaPaperPlane
 } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-} from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
-const pieData = [
-  { name: "Electronics", value: 400 },
-  { name: "Furniture", value: 300 },
-  { name: "Books", value: 200 },
-  { name: "Clothes", value: 100 },
-];
-const COLORS = ["#1A237E", "#8BC34A", "#FFA07A", "#F2C464"];
+import Categories from "./categories";
+import UserProducts from "./userProducts";
+import StoreRequests from "./storeRequests";
+import ManageUsers from "./ManageUsers";
+import ManageDeliveryAgents from "./deliveryAgents";
+import Complaints from "./complaints";
+import SendNotifications from "./sendNotifications";
+import PlatformReports from "./platformReports";
 
-const lineData = [
-  { name: "Jan", users: 30 },
-  { name: "Feb", users: 60 },
-  { name: "Mar", users: 45 },
-  { name: "Apr", users: 80 },
-  { name: "May", users: 100 },
-];
+export default function AdminDashboard() {
+  const [activePage, setActivePage] = useState("profit");
+  const [selectedStore, setSelectedStore] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedAgent, setSelectedAgent] = useState(null);
 
-const complaintsData = [
-  { id: 1, name: "Ali Ahmed", complaint: "The product arrived damaged." },
-  { id: 2, name: "Sara Noor", complaint: "Late delivery and missing items." },
-  { id: 3, name: "Omar Khalid", complaint: "The store ignored my messages." },
-];
+  const navigate = useNavigate(); // <-- لإعادة التوجيه
 
-const initialCategories = [
-  { id: 1, name: "Electronics" },
-  { id: 2, name: "Furniture" },
-  { id: 3, name: "Clothing" },
-  { id: 4, name: "Books" },
-];
+  const stores = [
+    { id: 1, name: "Tech Galaxy", profit: 1200 },
+    { id: 2, name: "Fashion World", profit: 850 },
+    { id: 3, name: "Furniture Hub", profit: 560 }
+  ];
 
-const storesData = [
-  {
-    id: 1,
-    name: "Alpha Store",
-    imageUrl: "/images/alpha-store.png",
-    documentUrl: "/docs/alpha-store-document.pdf",
-  },
-  {
-    id: 2,
-    name: "Beta Mart",
-    imageUrl: "/images/beta-mart.png",
-    documentUrl: "/docs/beta-mart-document.pdf",
-  },
-];
+  const users = [
+    { id: 1, name: "Ahmad Ali", total: 400 },
+    { id: 2, name: "Sara Saleh", total: 250 },
+    { id: 3, name: "Mohammad Yousef", total: 300 }
+  ];
 
-export default function Dashboard() {
-  const navigate = useNavigate();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("dashboard");
-  const [viewComplaint, setViewComplaint] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [categories, setCategories] = useState(initialCategories);
-  const [editId, setEditId] = useState(null);
-  const [categoryName, setCategoryName] = useState("");
+  const agents = [
+    { id: 1, name: "Ali Ali", deliveries: 20, profit: 20 * 3 },
+    { id: 2, name: "Sari Salman", deliveries: 35, profit: 35 * 3 }
+  ];
+
+  const chartData = selectedStore
+    ? [
+      { name: "Store Profit", value: selectedStore.profit },
+      { name: "Platform Fee", value: selectedStore.profit * 0.1 },
+      { name: "Net", value: selectedStore.profit * 0.9 }
+    ]
+    : selectedUser
+      ? [
+        { name: selectedUser.name, value: selectedUser.total },
+        { name: "Platform Fee", value: selectedUser.total * 0.05 }
+      ]
+      : selectedAgent
+        ? [
+          { name: selectedAgent.name, value: selectedAgent.profit },
+          { name: "Platform Fee", value: selectedAgent.profit * 0.1 }
+        ]
+        : [];
+
+  const renderContent = () => {
+    switch (activePage) {
+      case "categories":
+        return <Categories />;
+      case "products":
+        return <UserProducts />;
+      case "stores":
+        return <StoreRequests />;
+      case "users":
+        return <ManageUsers />;
+      case "delivery":
+        return <ManageDeliveryAgents />;
+      case "complaints":
+        return <Complaints />;
+      case "reports":
+        return <PlatformReports />;
+      case "notifications":
+        return <SendNotifications />;
+      case "profit":
+        return (
+          <div className="p-8">
+            <h1 className="text-2xl font-bold mb-6 text-teal-600 flex items-center gap-2">
+              <FaChartLine /> Profit Dashboard
+            </h1>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              <Dropdown label="Select Store" icon={<FaStore />} items={stores} onChange={setSelectedStore} />
+              <Dropdown label="Select User" icon={<FaUser />} items={users} onChange={setSelectedUser} />
+              <Dropdown label="Select Agent" icon={<FaMotorcycle />} items={agents} onChange={setSelectedAgent} />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+              {selectedStore && (
+                <Card title={selectedStore.name} value={`Total Profit: $${selectedStore.profit}`} />
+              )}
+              {selectedUser && (
+                <Card title={selectedUser.name} value={`Purchases Total: $${selectedUser.total}`} />
+              )}
+              {selectedAgent && (
+                <Card
+                  title={selectedAgent.name}
+                  value={`Deliveries: ${selectedAgent.deliveries} | Profit: $${selectedAgent.profit}`}
+                />
+              )}
+            </div>
+            {chartData.length > 0 && (
+              <div className="bg-white p-6 rounded shadow">
+                <h2 className="text-xl font-bold mb-4 text-gray-700">Overview</h2>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={chartData}>
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="value" fill="#00b894" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
+          </div>
+        );
+      default:
+        return <div className="p-8 text-gray-500">Select a section from sidebar</div>;
+    }
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("authToken");
-    navigate("/");
-  };
-
-  const filteredCategories = categories.filter((cat) =>
-    cat.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const handleAddCategory = () => {
-    if (!categoryName.trim()) return;
-    setCategories([
-      ...categories,
-      { id: categories.length + 1, name: categoryName.trim() },
-    ]);
-    setCategoryName("");
-  };
-
-  const handleEditCategory = () => {
-    setCategories(
-      categories.map((cat) =>
-        cat.id === editId ? { ...cat, name: categoryName } : cat
-      )
-    );
-    setEditId(null);
-    setCategoryName("");
+    localStorage.removeItem("token"); // إذا موجود توكن تسجيل دخول
+    navigate("/"); // يرجع للصفحة الرئيسية
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Mobile Header */}
-      <div className="md:hidden flex items-center justify-between bg-[#1A237E] text-white p-4">
-        <h2 className="text-lg font-bold">DASHBOARD</h2>
-        <button onClick={() => setSidebarOpen(!sidebarOpen)}>
-          <FaBars className="text-2xl" />
-        </button>
+    <div className="flex min-h-screen">
+      <div className="w-64 bg-gray-800 text-white p-6 space-y-2">
+        <h1 className="text-2xl font-bold mb-6">Admin Panel</h1>
+        <SidebarLink icon={<FaHome />} label="Profit" onClick={() => setActivePage("profit")} />
+        <SidebarLink icon={<FaClipboardList />} label="Categories" onClick={() => setActivePage("categories")} />
+        <SidebarLink icon={<FaBoxOpen />} label="User Products" onClick={() => setActivePage("products")} />
+        <SidebarLink icon={<FaStore />} label="Store Registrations" onClick={() => setActivePage("stores")} />
+        <SidebarLink icon={<FaUsers />} label="Manage Users" onClick={() => setActivePage("users")} />
+        <SidebarLink icon={<FaTruck />} label="Delivery Agents" onClick={() => setActivePage("delivery")} />
+        <SidebarLink icon={<FaBell />} label="Complaints" onClick={() => setActivePage("complaints")} />
+        <SidebarLink icon={<FaChartPie />} label="Platform Reports" onClick={() => setActivePage("reports")} />
+        <SidebarLink icon={<FaPaperPlane />} label="Notifications" onClick={() => setActivePage("notifications")} />
+        <SidebarLink icon={<FaSignOutAlt />} label="Logout" onClick={handleLogout} /> {/* تم التعديل هنا */}
       </div>
-
-      {/* Sidebar */}
-      <aside
-        className={`${sidebarOpen ? "block" : "hidden"} md:block w-full md:w-64 bg-[#1A237E] text-white p-6 md:rounded-r-3xl shadow-xl`}
-      >
-        <h2 className="hidden md:block text-2xl font-bold mb-6">DASHBOARD</h2>
-        <nav className="space-y-4">
-          <button
-            className="flex items-center gap-2 hover:text-[#F2C464]"
-            onClick={() => setActiveSection("dashboard")}
-          >
-            <FaTachometerAlt /> Dashboard
-          </button>
-          <button
-            className="flex items-center gap-2 hover:text-[#F2C464]"
-            onClick={() => setActiveSection("reports")}
-          >
-            <FaChartBar /> Reports
-          </button>
-          <div className="ml-2">
-            <button className="flex items-center gap-2 hover:text-[#F2C464]">
-              <FaUsers /> Users
-            </button>
-            <button
-              className="flex items-center gap-2 text-sm text-gray-200 ml-6"
-              onClick={() => setActiveSection("complaints")}
-            >
-              <FaComments /> Complaints
-            </button>
-          </div>
-          <button
-            className="flex items-center gap-2 hover:text-[#F2C464]"
-            onClick={() => setActiveSection("stores")}
-          >
-            <FaStore /> Stores
-          </button>
-          <button
-            className="flex items-center gap-2 hover:text-[#F2C464]"
-            onClick={() => setActiveSection("categories")}
-          >
-            <FaTags /> Categories
-          </button>
-          <button className="flex items-center gap-2 hover:text-[#F2C464]">
-            <FaCog /> Settings
-          </button>
-          <button
-            className="flex items-center gap-2 hover:text-[#F2C464] w-full mt-4"
-            onClick={handleLogout}
-          >
-            <FaSignOutAlt /> Log out
-          </button>
-        </nav>
-      </aside>
-
-      {/* Main */}
-      <main className="flex-1 p-6 bg-[#F7F7F7] min-h-screen">
-        <header className="text-2xl font-semibold text-[#1A237E] bg-white p-6 rounded shadow mb-6">
-          {activeSection === "dashboard"
-            ? "Welcome to the Admin Dashboard"
-            : activeSection.charAt(0).toUpperCase() + activeSection.slice(1)}
-        </header>
-
-        {/* Dashboard */}
-        {activeSection === "dashboard" && (
-          <section className="grid lg:grid-cols-2 gap-6">
-            <div className="bg-white p-6 rounded shadow">
-              <h3 className="text-lg font-bold text-[#1A237E] mb-4">User Growth</h3>
-              <ResponsiveContainer width="100%" height={250}>
-                <LineChart data={lineData}>
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Line type="monotone" dataKey="users" />
-                </LineChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="bg-white p-6 rounded shadow">
-              <h3 className="text-lg font-bold text-[#1A237E] mb-4">Product Categories</h3>
-              <ResponsiveContainer width="100%" height={250}>
-                <PieChart>
-                  <Pie
-                    data={pieData}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    label
-                  >
-                    {pieData.map((entry, idx) => (
-                      <Cell key={idx} fill={COLORS[idx % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </section>
-        )}
-
-        {/* Complaints */}
-        {activeSection === "complaints" && (
-          <section className="bg-white p-6 rounded shadow">
-            <h3 className="text-lg font-bold text-[#1A237E] mb-4">User Complaints</h3>
-            {complaintsData.map((c) => (
-              <div key={c.id} className="flex justify-between py-2 border-b">
-                <span className="font-medium">{c.name}</span>
-                <button
-                  onClick={() => setViewComplaint(c)}
-                  className="bg-[#1A237E] text-white px-3 py-1 rounded"
-                >
-                  View
-                </button>
-              </div>
-            ))}
-            {viewComplaint && (
-              <div className="mt-4">
-                <h4 className="font-bold text-[#1A237E]">{viewComplaint.name}'s Complaint</h4>
-                <p className="mt-2">{viewComplaint.complaint}</p>
-              </div>
-            )}
-          </section>
-        )}
-
-        {/* Stores */}
-        {activeSection === "stores" && (
-          <section className="bg-white p-6 rounded shadow">
-            <h3 className="text-lg font-bold text-[#1A237E] mb-4">Stores</h3>
-            {storesData.map((s) => (
-              <div key={s.id} className="py-4 border-b space-y-2">
-                <span className="font-medium block">{s.name}</span>
-                {s.imageUrl && (
-                  <img
-                    src={s.imageUrl}
-                    alt={`${s.name} Logo`}
-                    className="h-24 object-contain"
-                  />
-                )}
-                {s.documentUrl && (
-                  <a
-                    href={s.documentUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 underline"
-                  >
-                    View Store Document
-                  </a>
-                )}
-              </div>
-            ))}
-          </section>
-        )}
-
-        {/* Categories */}
-        {activeSection === "categories" && (
-          <section className="bg-white p-6 rounded shadow">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-[#1A237E]">Categories</h3>
-              <input
-                type="text"
-                placeholder="Search..."
-                className="border px-3 py-1 rounded"
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <table className="w-full table-auto border">
-              <thead className="bg-[#1A237E] text-white">
-                <tr>
-                  <th className="p-2 text-left">ID</th>
-                  <th className="p-2 text-left">Name</th>
-                  <th className="p-2 text-left">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredCategories.map((cat) => (
-                  <tr key={cat.id} className="border-b">
-                    <td className="p-2">{cat.id}</td>
-                    <td className="p-2">
-                      {editId === cat.id ? (
-                        <input
-                          value={categoryName}
-                          onChange={(e) => setCategoryName(e.target.value)}
-                          className="border px-2 py-1 rounded w-full"
-                        />
-                      ) : (
-                        cat.name
-                      )}
-                    </td>
-                    <td className="p-2 space-x-2">
-                      {editId === cat.id ? (
-                        <>
-                          <button
-                            onClick={handleEditCategory}
-                            className="px-3 py-1 rounded bg-[#1A237E] text-white"
-                          >
-                            Save
-                          </button>
-                          <button
-                            onClick={() => setEditId(null)}
-                            className="px-3 py-1 rounded bg-gray-400 text-white"
-                          >
-                            Cancel
-                          </button>
-                        </>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            setEditId(cat.id);
-                            setCategoryName(cat.name);
-                          }}
-                          className="px-3 py-1 rounded bg-green-600 text-white"
-                        >
-                          Edit
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <div className="mt-4 flex space-x-2">
-              <input
-                value={categoryName}
-                onChange={(e) => setCategoryName(e.target.value)}
-                placeholder="New Category"
-                className="border px-3 py-1 rounded flex-1"
-              />
-              <button
-                onClick={handleAddCategory}
-                className="px-4 py-1 rounded bg-blue-600 text-white"
-              >
-                Add Category
-              </button>
-            </div>
-          </section>
-        )}
-      </main>
+      <div className="flex-1 p-8 bg-gray-100">{renderContent()}</div>
     </div>
   );
 }
+
+const SidebarLink = ({ icon, label, onClick }) => (
+  <button
+    onClick={onClick}
+    className="flex items-center gap-3 w-full text-left hover:bg-gray-700 px-4 py-2 rounded"
+  >
+    {icon} <span>{label}</span>
+  </button>
+);
+
+const Dropdown = ({ label, icon, items, onChange }) => (
+  <div>
+    <label className="font-semibold text-gray-700 flex items-center gap-2 mb-2">
+      {icon} {label}
+    </label>
+    <select
+      className="w-full border px-4 py-2 rounded"
+      onChange={(e) => onChange(items.find((i) => i.id === parseInt(e.target.value)) || null)}
+      defaultValue=""
+    >
+      <option value="">-- Select --</option>
+      {items.map((item) => (
+        <option key={item.id} value={item.id}>
+          {item.name}
+        </option>
+      ))}
+    </select>
+  </div>
+);
+
+const Card = ({ title, value }) => (
+  <div className="bg-white rounded shadow p-6">
+    <h3 className="text-lg font-bold mb-2">{title}</h3>
+    <p className="text-gray-600">{value}</p>
+  </div>
+);
